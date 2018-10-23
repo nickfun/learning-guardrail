@@ -23,6 +23,9 @@
         <scala.compat.version>2.12</scala.compat.version>
         <spec2.version>4.2.0</spec2.version>
         <project.basedir>.</project.basedir>
+        <akka.version>2.5.12</akka.version>
+        <akkahttp.version>10.1.5</akkahttp.version>
+        <circe.version>0.9.3</circe.version>
     </properties>
 
     <dependencies>
@@ -36,30 +39,30 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_2.12</artifactId>
-            <version>2.5.12</version>
+            <version>${akka.version}</version>
         </dependency>
         <!-- Explicitly depend on akka-streams in same version as akka-actor-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-stream_2.12</artifactId>
-            <version>2.5.12</version>
+            <version>${akka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-http_2.12</artifactId>
-            <version>10.1.5</version>
+            <version>${akkahttp.version}</version>
         </dependency>
         <!-- If testkit used, explicitly declare dependency on akka-streams-testkit in same version as akka-actor-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-http-testkit_2.12</artifactId>
-            <version>10.1.5</version>
+            <version>${akkahttp.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-stream-testkit_2.12</artifactId>
-            <version>2.5.12</version>
+            <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- END AKKA -->
@@ -67,28 +70,28 @@
         <!-- CIRCE -->
         <dependency>
             <groupId>io.circe</groupId>
-            <version>0.9.3</version>
+            <version>${circe.version}</version>
             <artifactId>circe-core_2.12</artifactId>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <version>0.9.3</version>
+            <version>${circe.version}</version>
             <artifactId>circe-generic_2.12</artifactId>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <version>0.9.3</version>
+            <version>${circe.version}</version>
             <artifactId>circe-parser_2.12</artifactId>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-java8_2.12</artifactId>
-            <version>0.9.3</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-generic-extras_2.12</artifactId>
-            <version>0.9.3</version>
+            <version>${circe.version}</version>
         </dependency>
         <!-- END CIRCE -->
 
