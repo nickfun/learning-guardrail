@@ -23,7 +23,7 @@
         <scala.compat.version>2.12</scala.compat.version>
         <spec2.version>4.2.0</spec2.version>
         <project.basedir>.</project.basedir>
-        <akka.version>2.5.12</akka.version>
+        <akka.version>2.5.16</akka.version>
         <akkahttp.version>10.1.5</akkahttp.version>
         <circe.version>0.9.3</circe.version>
     </properties>
