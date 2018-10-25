@@ -1,95 +1,68 @@
 package gs.nick
 
-import gs.nick.server.definitions.{Game, System}
-import gs.nick.server.games.{GamesHandler, GamesResource}
-import gs.nick.server.systems.{SystemsHandler, SystemsResource}
+import gs.nick.server.birds.{BirdsHandler, BirdsResource}
+import gs.nick.server.definitions.{Bird, Sighting}
+import gs.nick.server.sightings.{SightingsHandler, SightingsResource}
 
 import scala.concurrent.Future
 
-object GamesDao {
-  var games: IndexedSeq[Game] = IndexedSeq(
-    Game(1, 2, "Sonic 2"),
-    Game(2, 2, "Vector Man"),
-    Game(3, 1, "Kid Chamelion"),
-  )
-
-  def gameById(id: Int): Option[Game] = {
-    games.find(g => g.id == id)
-  }
-
-  def haveGameById(id: Int): Boolean = gameById(id).isDefined
-
-  def addGame(newGame: Game): Unit = {
-    games = games :+ newGame
-  }
+object BirdsDao {
+  var all: IndexedSeq[Bird] = IndexedSeq.empty
 }
 
-object SystemsDao {
 
-  var systems: IndexedSeq[System] = IndexedSeq(
-    System(1, "Gensis", "Sega")
-  )
-
-  def systemById(id: Int): Option[System] = {
-    systems.find(s => s.id == id)
-  }
-
-  def haveSystemById(id: Int): Boolean = systemById(id).isDefined
-
-  def addSystem(newSystem: System): Unit = {
-    systems = systems :+ newSystem
-  }
-
-}
-
-class ApiHandler extends GamesHandler with SystemsHandler {
-  override def getGameList(respond: GamesResource.getGameListResponse.type)(): Future[GamesResource.getGameListResponse] = {
+class BirdsController extends BirdsHandler {
+  override def getBirdList(respond: BirdsResource.getBirdListResponse.type)(): Future[BirdsResource.getBirdListResponse] = {
     Future.successful {
-      respond.OK(GamesDao.games)
+      respond.OK(BirdsDao.all)
     }
   }
 
-  override def addGame(respond: GamesResource.addGameResponse.type)(newGame: Game): Future[GamesResource.addGameResponse] = {
+  override def addBird(respond: BirdsResource.addBirdResponse.type)(newBird: Bird): Future[BirdsResource.addBirdResponse] = {
     Future.successful {
-      if (SystemsDao.haveSystemById(newGame.systemId)) {
-        GamesDao.addGame(newGame)
-        respond.OK(newGame)
+      BirdsDao.all = BirdsDao.all :+ newBird
+      respond.OK(newBird)
+    }
+  }
+
+  override def getBirdById(respond: BirdsResource.getBirdByIdResponse.type)(birdId: Int): Future[BirdsResource.getBirdByIdResponse] = {
+    Future.successful {
+      val item = BirdsDao.all.find(_.id == birdId)
+      if (item.isDefined) {
+        respond.OK(item.get)
       } else {
-        respond.UnprocessableEntity(s"Bad system id: ${newGame.systemId}")
+        respond.NotFound
+      }
+    }
+  }
+}
+
+object SightingsDao {
+  var all: IndexedSeq[Sighting] = IndexedSeq.empty
+}
+
+class SightingsController extends SightingsHandler {
+  override def getSightingById(respond: SightingsResource.getSightingByIdResponse.type)(sightingsId: Int): Future[SightingsResource.getSightingByIdResponse] = {
+    Future.successful {
+      val item = SightingsDao.all.find(_.id == sightingsId)
+      if (item.isDefined) {
+        respond.OK(item.get)
+      } else {
+        respond.NotFound
       }
     }
   }
 
-  override def getGameById(respond: GamesResource.getGameByIdResponse.type)(gameId: Int): Future[GamesResource.getGameByIdResponse] = {
+  override def getSightingsList(respond: SightingsResource.getSightingsListResponse.type)(): Future[SightingsResource.getSightingsListResponse] = {
     Future.successful {
-      GamesDao
-        .gameById(gameId)
-        .fold(respond.NotFound) { game =>
-          respond.OK(game)
-        }
+      respond.OK(SightingsDao.all)
     }
   }
 
-  override def getSystemById(respond: SystemsResource.getSystemByIdResponse.type)(systemId: Int): Future[SystemsResource.getSystemByIdResponse] = {
+  override def addSighting(respond: SightingsResource.addSightingResponse.type)(newSighting: Sighting): Future[SightingsResource.addSightingResponse] = {
     Future.successful {
-      SystemsDao
-        .systemById(systemId)
-        .fold(respond.NotFound) { system =>
-          respond.OK(system)
-        }
-    }
-  }
-
-  override def getSystemList(respond: SystemsResource.getSystemListResponse.type)(): Future[SystemsResource.getSystemListResponse] = {
-    Future.successful {
-      respond.OK(SystemsDao.systems)
-    }
-  }
-
-  override def addSystem(respond: SystemsResource.addSystemResponse.type)(newSystem: System): Future[SystemsResource.addSystemResponse] = {
-    Future.successful {
-      SystemsDao.addSystem(newSystem)
-      respond.OK(newSystem)
+      SightingsDao.all = SightingsDao.all :+ newSighting
+      respond.OK(newSighting)
     }
   }
 }

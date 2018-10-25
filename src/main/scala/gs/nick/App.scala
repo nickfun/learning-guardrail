@@ -5,14 +5,14 @@ import gs.nick.server.AkkaHttpImplicits._
 import akka.http.scaladsl.server.HttpApp
 import akka.http.scaladsl.server.Route
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
-import gs.nick.server.games.GamesResource
-import gs.nick.server.systems.SystemsResource
+import gs.nick.server.birds.BirdsResource
+import gs.nick.server.sightings.SightingsResource
 
 import scala.concurrent.ExecutionContext
 
 // Server definition
 object WebServer extends HttpApp {
-  implicit val restActorSystem: ActorSystem = ActorSystem(name="games-api")
+  implicit val restActorSystem: ActorSystem = ActorSystem(name="birds-api")
 
   implicit val executionContext: ExecutionContext = restActorSystem.dispatcher
   // Counterpart which materializes streams for the REST endpoints
@@ -23,10 +23,11 @@ object WebServer extends HttpApp {
     }
   )
 
-  val myHandler: ApiHandler = new ApiHandler()
+  val birdsController = new BirdsController
+  val sightingsController = new SightingsController
 
   override def routes: Route =
-    GamesResource.routes(myHandler) ~ SystemsResource.routes(myHandler)
+    BirdsResource.routes(birdsController) ~ SightingsResource.routes(sightingsController)
 }
 
 object App {

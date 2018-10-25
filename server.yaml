@@ -1,46 +1,46 @@
 swagger: "2.0"
 info:
-  description: "A simple server that knows my Video Game collection"
+  description: "Birds API"
   version: "1.0.0"
-  title: "game-collection-api"
+  title: "Birds API"
   termsOfService: "http://nick.gs/"
   contact:
     email: "nick@nick.gs"
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "games.nick.gs"
+    name: "GPL"
+    url: "http://www.fsf.org"
+host: "birds.nick.gs"
 basePath: "/v1"
 tags:
-- name: "games"
-  description: "Operations on Games"
-- name: "systems"
-  description: "Operations on Game Consoles"
+- name: "birds"
+  description: "Known Birds"
+- name: "sightings"
+  description: "Sightings of birds"
 schemes:
 - "https"
 - "http"
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: "Learn the Birds API"
+  url: "http://birds.nick.gs"
 paths:
-  /games:
+  /birds:
     post:
       tags:
-      - "games"
-      summary: "Add a new video game"
+      - "birds"
+      summary: "Add a new bird"
       description: ""
-      operationId: "addGame"
+      operationId: "addBird"
       consumes:
       - "application/json"
       produces:
       - "application/json"
       parameters:
       - in: "body"
-        name: "newGame"
-        description: "Name of video game"
+        name: "newBird"
+        description: "Bird object to add"
         required: true
         schema:
-          $ref: "#/definitions/Game"
+          $ref: "#/definitions/Bird"
       responses:
         422:
           description: "Invalid input"
@@ -49,13 +49,13 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/Game"
+            $ref: "#/definitions/Bird"
     get:
       tags:
-      - "games"
-      summary: "view all known games"
+      - "birds"
+      summary: "view all known Birds"
       description: ""
-      operationId: "getGameList"
+      operationId: "getBirdList"
       consumes:
       - "application/json"
       produces:
@@ -68,18 +68,18 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Game"
-  /games/{gameId}:
+              $ref: "#/definitions/Bird"
+  /birds/{birdId}:
     get:
       tags:
-      - "games"
-      summary: "View one game"
+      - "birds"
+      summary: "Details of one Bird"
       description: ""
-      operationId: "getGameById"
+      operationId: "getBirdById"
       produces:
       - "application/json"
       parameters:
-      - name: "gameId"
+      - name: "birdId"
         in: "path"
         description: ""
         required: true
@@ -89,21 +89,21 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/Game"
+            $ref: "#/definitions/Bird"
         404:
-          description: "Invalid gameId value"
-  /systems/{systemId}:
+          description: "Invalid Bird ID value"
+  /sightings/{sightingsId}:
     get:
       tags:
-      - "systems"
-      summary: "Get a single System"
-      operationId: "getSystemById"
+      - "sightings"
+      summary: "View one Sighting"
+      operationId: "getSightingById"
       produces:
       - "application/json"
       consumes:
       - "application/json"
       parameters:
-      - name: "systemId"
+      - name: "sightingsId"
         in: "path"
         type: "integer"
         format: "int32"
@@ -112,15 +112,15 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/System"
+            $ref: "#/definitions/Sighting"
         404:
-          description: "system not found"
-  /systems:
+          description: "Sighting not found"
+  /sightings:
     get:
       tags:
-      - "systems"
-      summary: "view all systems"
-      operationId: "getSystemList"
+      - "sightings"
+      summary: "view all sightings"
+      operationId: "getSightingsList"
       produces:
       - "application/json"
       consumes:
@@ -131,75 +131,61 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/System"
+              $ref: "#/definitions/Sighting"
     post:
       tags:
-      - "systems"
-      summary: "add a system"
-      operationId: "addSystem"
+      - "sightings"
+      summary: "add a sighting"
+      operationId: "addSighting"
       produces:
       - "application/json"
       consumes:
       - "application/json"
       parameters:
       - in: "body"
-        name: "newSystem"
-        description: "Describe the new system"
+        name: "newSighting"
+        description: "Describe the new sighting"
         required: true
         schema:
-          $ref: "#/definitions/System"
+          $ref: "#/definitions/Sighting"
       responses:
         200:
           description: "successfull operation"
           schema:
-            $ref: "#/definitions/System"
+            $ref: "#/definitions/Sighting"
         422:
           description: "invalid input"
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
 definitions:
-  Game:
+  Sighting:
     type: "object"
     required:
     - "id"
-    - "name"
-    - "system_id"
+    - "bird_id"
+    - "datetime"
+    - "notes"
     properties:
       id:
         type: "integer"
         format: "int32"
-      system_id:
+      bird_id:
         type: "integer"
         format: "int32"
-      name:
+      datetime:
         type: "string"
-      release_date:
+        #format: "datetime"
+      notes:
         type: "string"
-        #format: "date"
-  System:
+  Bird:
     type: "object"
     required:
     - "id"
     - "name"
-    - "company"
+    - "notes"
     properties:
       id:
         type: "integer"
         format: "int32"
       name:
         type: "string"
-      company:
+      notes:
         type: "string"
-      release_date:
-        type: "string"
-        #format: "date"

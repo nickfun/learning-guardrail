@@ -2,15 +2,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>gs.nick</groupId>
-    <artifactId>swag1</artifactId>
+    <artifactId>birds</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>My wonderfull scala app</description>
+    <description>Bird Sighting Server</description>
     <inceptionYear>2018</inceptionYear>
     <licenses>
         <license>
-            <name>My License</name>
-            <url>http://....</url>
+            <name>GPL</name>
+            <url>http://fsf.org</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -221,7 +221,7 @@
                         </goals>
                         <configuration>
                             <kind>server</kind>
-                            <specPath>${project.basedir}/games-api.yaml</specPath>
+                            <specPath>${project.basedir}/server.yaml</specPath>
                             <packageName>gs.nick.server</packageName>
                         </configuration>
                     </execution>
@@ -232,7 +232,7 @@
                         </goals>
                         <configuration>
                             <kind>server</kind>
-                            <specPath>${project.basedir}/games-api.yaml</specPath>
+                            <specPath>${project.basedir}/server.yaml</specPath>
                             <packageName>gs.nick.server_tests</packageName>
                         </configuration>
                     </execution>
