@@ -36,6 +36,7 @@ class AppTest {
     assertTrue(SightingsDao.all.isEmpty)
     controller.addSighting(SightingsResource.addSightingResponse)(Sighting(1, 1, "2017-09-14", "saw a blue jay this morning"))
     controller.addSighting(SightingsResource.addSightingResponse)(Sighting(2, 1, "2018-01-03", "At the park in Hayward"))
+    assertTrue(SightingsDao.all.length == 2)
   }
 
 }
