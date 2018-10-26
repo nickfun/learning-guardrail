@@ -8,6 +8,10 @@ import scala.concurrent.Future
 
 object BirdsDao {
   var all: IndexedSeq[Bird] = IndexedSeq.empty
+
+  def reset(): Unit = {
+    all = IndexedSeq.empty
+  }
 }
 
 
@@ -39,6 +43,10 @@ class BirdsController extends BirdsHandler {
 
 object SightingsDao {
   var all: IndexedSeq[Sighting] = IndexedSeq.empty
+
+  def reset(): Unit = {
+    all = IndexedSeq.empty
+  }
 }
 
 class SightingsController extends SightingsHandler {
