@@ -43,7 +43,10 @@ object WebServer extends HttpApp {
   val todosController = new TodosController(defaultUrlFormatter)
 
   override def routes: Route = {
-    respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"), RawHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PATCH")) {
+    val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
+    val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
+    val allowMethods = RawHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PATCH")
+    respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
         pathSingleSlash {
           get {
