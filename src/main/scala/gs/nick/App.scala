@@ -1,6 +1,7 @@
 package gs.nick
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.model.headers.RawHeader
 import gs.nick.server.AkkaHttpImplicits._
 import akka.http.scaladsl.server.HttpApp
@@ -50,7 +51,7 @@ object WebServer extends HttpApp {
           }
         } ~ TodosResource.routes(todosController) ~ path("todos") {
           options {
-            complete("all good")
+            complete(HttpResponse(status = StatusCodes.NoContent))
           }
         }
       }
