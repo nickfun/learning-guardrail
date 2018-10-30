@@ -43,11 +43,13 @@ object WebServer extends HttpApp {
 
   override def routes: Route = {
     respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"), RawHeader("Access-Control-Allow-Methods", "GET,HEAD,POST,DELETE,OPTIONS,PUT,PATCH")) {
-      path("/") {
-        get {
-          complete("The server is running :-D")
-        }
-      } ~ TodosResource.routes(todosController)
+      Route.seal {
+        pathSingleSlash {
+          get {
+            complete("The server is running :-D")
+          }
+        } ~ TodosResource.routes(todosController)
+      }
     }
   }
 }
