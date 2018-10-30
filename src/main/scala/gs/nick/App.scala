@@ -52,10 +52,8 @@ object WebServer extends HttpApp {
           get {
             complete("The server is running :-D")
           }
-        } ~ TodosResource.routes(todosController) ~ path("todos") {
-          options {
-            complete(HttpResponse(status = StatusCodes.NoContent))
-          }
+        } ~ TodosResource.routes(todosController) ~ options {
+          complete(HttpResponse(status = StatusCodes.NoContent))
         }
       }
     }

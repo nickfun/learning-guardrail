@@ -70,4 +70,27 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
       }
     }
   }
+
+  override def deleteAllTodos(respond: TodosResource.deleteAllTodosResponse.type)(): Future[TodosResource.deleteAllTodosResponse] = {
+    println("DELETE list of todos")
+    Future.successful {
+      TodosDao.reset()
+      respond.OK
+    }
+  }
+
+  override def deleteTodoById(respond: TodosResource.deleteTodoByIdResponse.type)(todoId: String): Future[TodosResource.deleteTodoByIdResponse] = {
+    println("DELETE one todo " + todoId)
+    Future.successful {
+      val item = TodosDao.find(todoId)
+      if (!item.isDefined) {
+        respond.NotFound
+      } else {
+        TodosDao.all = TodosDao.all.filterNot { item =>
+          item.id.isDefined && item.id.get == todoId
+        }
+        respond.OK
+      }
+    }
+  }
 }

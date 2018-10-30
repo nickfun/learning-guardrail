@@ -21,6 +21,19 @@ externalDocs:
   url: "http://birds.nick.gs"
 paths:
   /todos:
+    delete:
+      tags:
+      - "todos"
+      summary: "remove all todos"
+      description: ""
+      operationId: "deleteAllTodos"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
     post:
       tags:
       - "todos"
@@ -88,6 +101,25 @@ paths:
             $ref: "#/definitions/Todo"
         404:
           description: "Invalid Todo ID value"
+    delete:
+      tags:
+      - "todos"
+      summary: "delete a single todo"
+      description: ""
+      operationId: "deleteTodoById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "todoId"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "can not find todo"
     patch:
       tags:
       - "todos"
