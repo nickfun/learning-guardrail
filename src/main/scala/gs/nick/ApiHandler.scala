@@ -38,7 +38,10 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
     Future.successful {
       val newId = UUID.randomUUID().toString
       val url = urlFormatter(newId)
-      val x = newTodo.copy(id = Option(newId), url = Option(url))
+      var x = newTodo.copy(id = Option(newId), url = Option(url))
+      if (x.completed.isEmpty) {
+        x = x.copy(completed = Option(false))
+      }
       TodosDao.all = TodosDao.all :+ x
       respond.OK(x)
     }
@@ -61,7 +64,7 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
     println("PATCH update todo by id " + todoId)
     Future.successful {
       val item = TodosDao.find(todoId)
-      if (!item.isDefined) {
+      if (item.isEmpty) {
         respond.NotFound
       } else {
         val withoutItem = TodosDao.all.filterNot(_.id.getOrElse("_") == todoId)
@@ -84,7 +87,7 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
     println("DELETE one todo " + todoId)
     Future.successful {
       val item = TodosDao.find(todoId)
-      if (!item.isDefined) {
+      if (item.isEmpty) {
         respond.NotFound
       } else {
         TodosDao.all = TodosDao.all.filterNot { item =>
