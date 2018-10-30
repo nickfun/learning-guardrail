@@ -51,6 +51,7 @@ object App {
     println(s"STARTUP  domain = $domain")
     println(s"STARTUP  port = $port")
     println(s"STARTUP server will bind to port $port")
-    WebServer.startServer("localhost", port)
+    WebServer.startServer("0.0.0.0", port)
+    println(s"STARTDOWN server is past running")
   }
 }
