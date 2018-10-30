@@ -1,6 +1,7 @@
 package gs.nick
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.headers.RawHeader
 import gs.nick.server.AkkaHttpImplicits._
 import akka.http.scaladsl.server.HttpApp
 import akka.http.scaladsl.server.Route
@@ -40,8 +41,15 @@ object WebServer extends HttpApp {
 
   val todosController = new TodosController(defaultUrlFormatter)
 
-  override def routes: Route =
-    TodosResource.routes(todosController)
+  override def routes: Route = {
+    respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"), RawHeader("Access-Control-Allow-Methods", "GET,HEAD,POST,DELETE,OPTIONS,PUT,PATCH")) {
+      path("/") {
+        get {
+          complete("The server is running :-D")
+        }
+      } ~ TodosResource.routes(todosController)
+    }
+  }
 }
 
 object App {
