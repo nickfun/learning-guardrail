@@ -1,3 +1,3 @@
 #!/bin/bash
 mvn clean
-mvn package && java -jar target/birds-1.0-SNAPSHOT-fatjar.jar
+mvn package && java -jar target/todoapi-1.0-SNAPSHOT-fatjar.jar
