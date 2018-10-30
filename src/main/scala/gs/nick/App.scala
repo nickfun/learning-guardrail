@@ -42,7 +42,7 @@ object WebServer extends HttpApp {
   val todosController = new TodosController(defaultUrlFormatter)
 
   override def routes: Route = {
-    respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"), RawHeader("Access-Control-Allow-Methods", "GET,HEAD,POST,DELETE,OPTIONS,PUT,PATCH")) {
+    respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*"), RawHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PATCH")) {
       Route.seal {
         pathSingleSlash {
           get {
@@ -50,7 +50,7 @@ object WebServer extends HttpApp {
           }
         } ~ TodosResource.routes(todosController) ~ path("todos") {
           options {
-            complete("ACCEPT stuff")
+            complete("all good")
           }
         }
       }
