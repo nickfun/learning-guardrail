@@ -48,7 +48,11 @@ object WebServer extends HttpApp {
           get {
             complete("The server is running :-D")
           }
-        } ~ TodosResource.routes(todosController)
+        } ~ TodosResource.routes(todosController) ~ path("todos") {
+          options {
+            complete("ACCEPT stuff")
+          }
+        }
       }
     }
   }
