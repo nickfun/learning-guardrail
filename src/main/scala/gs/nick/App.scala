@@ -47,7 +47,10 @@ object WebServer extends HttpApp {
 object App {
   def main(args: Array[String]) = {
   	val port = WebServer.getPort
-    println(s"\nSERVER WILL BIND $port")
+    val domain = WebServer.getDomain
+    println(s"STARTUP  domain = $domain")
+    println(s"STARTUP  port = $port")
+    println(s"STARTUP server will bind to port $port")
     WebServer.startServer("localhost", port)
   }
 }
