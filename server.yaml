@@ -153,8 +153,6 @@ paths:
 definitions:
   Todo:
     type: "object"
-    required:
-    - "title"
     properties:
       id:
         type: "string"

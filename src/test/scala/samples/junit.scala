@@ -19,12 +19,12 @@ class AppTest {
     def foramtterId(x: String): String = x
     val controller = new TodosController(foramtterId)
 
-    val t1 = Todo(Some("ID"), "first", None, None, None)
-    val t2 = Todo(Some("second"), "second", None, None, Option("URL123"))
+    val t1 = Todo(Some("ID"), Option("first"), None, None, None)
+    val t2 = Todo(Some("second"), Option("second"), None, None, Option("URL123"))
 
     val result = controller.mergeTodo(t1, t2)
     assertTrue(t2.id.get == result.id.get)
-    assertTrue(t2.title == result.title)
+    assertTrue(t2.title.get == result.title.get)
     assertTrue(result.url.get == t2.url.get)
   }
 
