@@ -1,58 +1,32 @@
 package gs.nick
 
-import gs.nick.server.birds.{BirdsHandler, BirdsResource}
-import gs.nick.server.definitions.{Bird, Sighting}
-import gs.nick.server.sightings.{SightingsHandler, SightingsResource}
+import gs.nick.server.definitions.Todo
+import gs.nick.server.todos.{TodosHandler, TodosResource}
 
 import scala.concurrent.Future
 
-object BirdsDao {
-  var all: IndexedSeq[Bird] = IndexedSeq.empty
-
-  def reset(): Unit = {
-    all = IndexedSeq.empty
-  }
+object TodosDao {
+  var all: IndexedSeq[Todo] = IndexedSeq.empty
+  def reset(): Unit = { all = IndexedSeq.empty }
 }
 
-
-class BirdsController extends BirdsHandler {
-  override def getBirdList(respond: BirdsResource.getBirdListResponse.type)(): Future[BirdsResource.getBirdListResponse] = {
+class TodosController extends TodosHandler {
+  override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
     Future.successful {
-      respond.OK(BirdsDao.all)
+      respond.OK(TodosDao.all)
     }
   }
 
-  override def addBird(respond: BirdsResource.addBirdResponse.type)(newBird: Bird): Future[BirdsResource.addBirdResponse] = {
+  override def addTodo(respond: TodosResource.addTodoResponse.type)(newTodo: Todo): Future[TodosResource.addTodoResponse] = {
     Future.successful {
-      BirdsDao.all = BirdsDao.all :+ newBird
-      respond.OK(newBird)
+      TodosDao.all = TodosDao.all :+ newTodo
+      respond.OK(newTodo)
     }
   }
 
-  override def getBirdById(respond: BirdsResource.getBirdByIdResponse.type)(birdId: Int): Future[BirdsResource.getBirdByIdResponse] = {
+  override def getTodoById(respond: TodosResource.getTodoByIdResponse.type)(todoId: String): Future[TodosResource.getTodoByIdResponse] = {
     Future.successful {
-      val item = BirdsDao.all.find(_.id == birdId)
-      if (item.isDefined) {
-        respond.OK(item.get)
-      } else {
-        respond.NotFound
-      }
-    }
-  }
-}
-
-object SightingsDao {
-  var all: IndexedSeq[Sighting] = IndexedSeq.empty
-
-  def reset(): Unit = {
-    all = IndexedSeq.empty
-  }
-}
-
-class SightingsController extends SightingsHandler {
-  override def getSightingById(respond: SightingsResource.getSightingByIdResponse.type)(sightingsId: Int): Future[SightingsResource.getSightingByIdResponse] = {
-    Future.successful {
-      val item = SightingsDao.all.find(_.id == sightingsId)
+      val item = TodosDao.all.find(_.id == todoId)
       if (item.isDefined) {
         respond.OK(item.get)
       } else {
@@ -61,16 +35,19 @@ class SightingsController extends SightingsHandler {
     }
   }
 
-  override def getSightingsList(respond: SightingsResource.getSightingsListResponse.type)(): Future[SightingsResource.getSightingsListResponse] = {
-    Future.successful {
-      respond.OK(SightingsDao.all)
-    }
-  }
+  def mergeTodo(t1: Todo, t2: Todo): Todo = {t2}
 
-  override def addSighting(respond: SightingsResource.addSightingResponse.type)(newSighting: Sighting): Future[SightingsResource.addSightingResponse] = {
+  override def updateTodoById(respond: TodosResource.updateTodoByIdResponse.type)(todoId: String, newTodo: Todo): Future[TodosResource.updateTodoByIdResponse] = {
     Future.successful {
-      SightingsDao.all = SightingsDao.all :+ newSighting
-      respond.OK(newSighting)
+      val item = TodosDao.all.find(_.id == todoId)
+      if (!item.isDefined) {
+        respond.NotFound
+      } else {
+        val withoutItem = TodosDao.all.filterNot(_.id == todoId)
+        val updatedTodo = mergeTodo(item.get, newTodo)
+        TodosDao.all = withoutItem :+ updatedTodo
+        respond.OK(updatedTodo)
+      }
     }
   }
 }
