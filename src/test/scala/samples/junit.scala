@@ -4,6 +4,8 @@ package samples
 import scala.concurrent.duration.Duration
 import org.junit._
 import Assert._
+import gs.nick.TodosController
+import gs.nick.server.definitions.Todo
 
 import scala.concurrent.Await
 
@@ -12,9 +14,18 @@ class AppTest {
 
 
   @Test
-  def testAddSighting(): Unit = {
+  def testMerge(): Unit = {
 
-    assertTrue(2+2 == 4)
+    def foramtterId(x: String): String = x
+    val controller = new TodosController(foramtterId)
+
+    val t1 = Todo(Some("ID"), "first", None, None, None)
+    val t2 = Todo(Some("second"), "second", None, None, Option("URL123"))
+
+    val result = controller.mergeTodo(t1, t2)
+    assertTrue(t2.id.get == result.id.get)
+    assertTrue(t2.title == result.title)
+    assertTrue(result.url.get == t2.url.get)
   }
 
 }

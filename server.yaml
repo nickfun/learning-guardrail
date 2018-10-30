@@ -10,7 +10,6 @@ info:
     name: "GPL"
     url: "http://www.fsf.org"
 host: "todos.nick.gs"
-basePath: "/v1"
 tags:
 - name: "todos"
   description: "Manipluation of Todos"

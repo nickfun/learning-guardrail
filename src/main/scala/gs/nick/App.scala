@@ -22,7 +22,23 @@ object WebServer extends HttpApp {
     }
   )
 
-  val todosController = new TodosController
+  def getPort: Int = {
+    val sPort = sys.env.getOrElse("PORT", "8080")
+    sPort.toInt
+  }
+
+  def getDomain: String = {
+    val port = getPort
+    val default = s"http://localhost:$port"
+    sys.env.getOrElse("DOMAIN", default)
+  }
+
+  def defaultUrlFormatter(id: String): String = {
+    val domain = getDomain
+    s"$domain/todos/$id"
+  }
+
+  val todosController = new TodosController(defaultUrlFormatter)
 
   override def routes: Route =
     TodosResource.routes(todosController)
@@ -30,7 +46,7 @@ object WebServer extends HttpApp {
 
 object App {
   def main(args: Array[String]) = {
-  	val port = 8080
+  	val port = WebServer.getPort
     println(s"\nSERVER WILL BIND $port")
     WebServer.startServer("localhost", port)
   }

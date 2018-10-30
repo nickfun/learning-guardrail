@@ -15,23 +15,27 @@ object TodosDao {
   }
 }
 
-class TodosController extends TodosHandler {
+class TodosController(val urlFormatter: String => String) extends TodosHandler {
   override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
+    println("GET todo list")
     Future.successful {
       respond.OK(TodosDao.all)
     }
   }
 
   override def addTodo(respond: TodosResource.addTodoResponse.type)(newTodo: Todo): Future[TodosResource.addTodoResponse] = {
+    println("POST add todo")
     Future.successful {
-      val u = UUID.randomUUID()
-      val x = newTodo.copy(id = Option(u.toString))
+      val newId = UUID.randomUUID().toString
+      val url = urlFormatter(newId)
+      val x = newTodo.copy(id = Option(newId), url = Option(url))
       TodosDao.all = TodosDao.all :+ x
       respond.OK(x)
     }
   }
 
   override def getTodoById(respond: TodosResource.getTodoByIdResponse.type)(todoId: String): Future[TodosResource.getTodoByIdResponse] = {
+    println("GET todo by ID " + todoId)
     Future.successful {
       val item = TodosDao.find(todoId)
       if (item.isDefined) {
@@ -43,9 +47,17 @@ class TodosController extends TodosHandler {
     }
   }
 
-  def mergeTodo(t1: Todo, t2: Todo): Todo = {t2}
+  def mergeTodo(t1: Todo, t2: Todo): Todo = {
+    val id = List(t2.id, t1.id).flatten.headOption
+    val title = t2.title
+    val order = List(t2.order, t1.order).flatten.headOption
+    val completed = List(t2.completed, t1.completed).flatten.headOption
+    val url = List(t2.url, t1.url).flatten.headOption
+    Todo(id, title, order, completed, url)
+  }
 
   override def updateTodoById(respond: TodosResource.updateTodoByIdResponse.type)(todoId: String, newTodo: Todo): Future[TodosResource.updateTodoByIdResponse] = {
+    println("PATCH update todo by id " + todoId)
     Future.successful {
       val item = TodosDao.find(todoId)
       if (!item.isDefined) {
