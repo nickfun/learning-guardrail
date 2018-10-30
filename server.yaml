@@ -1,21 +1,17 @@
 swagger: "2.0"
 info:
-  description: "Birds API"
+  description: "Todo Backend API"
   version: "1.0.0"
-  title: "Birds API"
+  title: "Todos API"
   termsOfService: "http://nick.gs/"
   contact:
     email: "nick@nick.gs"
   license:
     name: "GPL"
     url: "http://www.fsf.org"
-host: "birds.nick.gs"
+host: "todos.nick.gs"
 basePath: "/v1"
 tags:
-- name: "birds"
-  description: "Known Birds"
-- name: "sightings"
-  description: "Sightings of birds"
 - name: "todos"
   description: "Manipluation of Todos"
 schemes:
@@ -122,138 +118,7 @@ paths:
             $ref: "#/definitions/Todo"
         404:
           description: "Todo not found"
-  /birds:
-    post:
-      tags:
-      - "birds"
-      summary: "Add a new bird"
-      description: ""
-      operationId: "addBird"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "newBird"
-        description: "Bird object to add"
-        required: true
-        schema:
-          $ref: "#/definitions/Bird"
-      responses:
-        422:
-          description: "Invalid input"
-          schema:
-            type: "string"
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Bird"
-    get:
-      tags:
-      - "birds"
-      summary: "view all known Birds"
-      description: ""
-      operationId: "getBirdList"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      responses:
-        500:
-          description: "Database error"
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Bird"
-  /birds/{birdId}:
-    get:
-      tags:
-      - "birds"
-      summary: "Details of one Bird"
-      description: ""
-      operationId: "getBirdById"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "birdId"
-        in: "path"
-        description: ""
-        required: true
-        type: "integer"
-        format: "int32"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Bird"
-        404:
-          description: "Invalid Bird ID value"
-  /sightings/{sightingsId}:
-    get:
-      tags:
-      - "sightings"
-      summary: "View one Sighting"
-      operationId: "getSightingById"
-      produces:
-      - "application/json"
-      consumes:
-      - "application/json"
-      parameters:
-      - name: "sightingsId"
-        in: "path"
-        type: "integer"
-        format: "int32"
-        required: true
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Sighting"
-        404:
-          description: "Sighting not found"
-  /sightings:
-    get:
-      tags:
-      - "sightings"
-      summary: "view all sightings"
-      operationId: "getSightingsList"
-      produces:
-      - "application/json"
-      consumes:
-      - "application/json"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Sighting"
-    post:
-      tags:
-      - "sightings"
-      summary: "add a sighting"
-      operationId: "addSighting"
-      produces:
-      - "application/json"
-      consumes:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "newSighting"
-        description: "Describe the new sighting"
-        required: true
-        schema:
-          $ref: "#/definitions/Sighting"
-      responses:
-        200:
-          description: "successfull operation"
-          schema:
-            $ref: "#/definitions/Sighting"
-        422:
-          description: "invalid input"
+
 definitions:
   Todo:
     type: "object"
@@ -270,37 +135,4 @@ definitions:
       completed:
         type: "boolean"
       url:
-        type: "string"
-  Sighting:
-    type: "object"
-    required:
-    - "id"
-    - "bird_id"
-    - "datetime"
-    - "notes"
-    properties:
-      id:
-        type: "integer"
-        format: "int32"
-      bird_id:
-        type: "integer"
-        format: "int32"
-      datetime:
-        type: "string"
-        #format: "datetime"
-      notes:
-        type: "string"
-  Bird:
-    type: "object"
-    required:
-    - "id"
-    - "name"
-    - "notes"
-    properties:
-      id:
-        type: "integer"
-        format: "int32"
-      name:
-        type: "string"
-      notes:
         type: "string"

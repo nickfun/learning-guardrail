@@ -1,5 +1,7 @@
 package gs.nick
 
+import java.util.UUID
+
 import gs.nick.server.definitions.Todo
 import gs.nick.server.todos.{TodosHandler, TodosResource}
 
@@ -19,8 +21,10 @@ class TodosController extends TodosHandler {
 
   override def addTodo(respond: TodosResource.addTodoResponse.type)(newTodo: Todo): Future[TodosResource.addTodoResponse] = {
     Future.successful {
-      TodosDao.all = TodosDao.all :+ newTodo
-      respond.OK(newTodo)
+      val u = UUID.randomUUID()
+      val x = newTodo.copy(id = Option(u.toString))
+      TodosDao.all = TodosDao.all :+ x
+      respond.OK(x)
     }
   }
 
