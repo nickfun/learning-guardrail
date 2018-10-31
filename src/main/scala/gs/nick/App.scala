@@ -39,21 +39,18 @@ class WebServer extends HttpApp {
   val todosController = new TodosController(getDomain)
 
   override def routes: Route = {
+
+    val homeRoutes = pathSingleSlash { get { complete("The server is running :-D ")}}
+    val controlleRoutes = TodosResource.routes(todosController)
+    val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
+
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
     val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
     val allowMethods = RawHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PATCH")
+
     respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
-        // add some helper routes that are not part of the spec
-        pathSingleSlash {
-          get {
-            complete("The server is running :-D")
-          }
-        // add a response for all OPTIONS requests to the browser pre-flight checks will pass
-        } ~ options {
-          complete(HttpResponse(status = StatusCodes.NoContent))
-        // add the routes defined in our swagger spec
-        } ~ TodosResource.routes(todosController)
+        homeRoutes ~ controlleRoutes ~ corsRoutes
       }
     }
   }
