@@ -41,7 +41,6 @@
             <artifactId>akka-actor_2.12</artifactId>
             <version>${akka.version}</version>
         </dependency>
-        <!-- Explicitly depend on akka-streams in same version as akka-actor-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-stream_2.12</artifactId>
@@ -52,7 +51,7 @@
             <artifactId>akka-http_2.12</artifactId>
             <version>${akkahttp.version}</version>
         </dependency>
-        <!-- If testkit used, explicitly declare dependency on akka-streams-testkit in same version as akka-actor-->
+        <!-- AKKA and tests -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-testkit_2.12</artifactId>
@@ -71,7 +70,6 @@
             <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- END AKKA -->
 
         <!-- CIRCE -->
         <dependency>
@@ -99,15 +97,8 @@
             <artifactId>circe-generic-extras_2.12</artifactId>
             <version>${circe.version}</version>
         </dependency>
-        <!-- END CIRCE -->
 
-        <!-- Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- UNIT TESTS -->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.compat.version}</artifactId>
@@ -169,8 +160,6 @@
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
                     <filereports>TestSuiteReport.txt</filereports>
-                    <!-- Comma separated list of JUnit test class names to execute -->
-                    <jUnitClasses>gs.nick.tests.AppTestSuite</jUnitClasses>
                 </configuration>
                 <executions>
                     <execution>
@@ -229,17 +218,6 @@
                             <kind>server</kind>
                             <specPath>${project.basedir}/server.yaml</specPath>
                             <packageName>gs.nick.server</packageName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-app-server-tests</id>
-                        <goals>
-                            <goal>generate-test-sources</goal>
-                        </goals>
-                        <configuration>
-                            <kind>server</kind>
-                            <specPath>${project.basedir}/server.yaml</specPath>
-                            <packageName>gs.nick.server_tests</packageName>
                         </configuration>
                     </execution>
                 </executions>

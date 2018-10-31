@@ -64,10 +64,23 @@ object App {
     val server = new WebServer
   	val port = server.getPort
     val domain = server.getDomain
+    systemDebug()
     println(s"STARTUP domain = $domain")
     println(s"STARTUP port = $port")
     println(s"STARTUP server will bind to port $port")
     server.startServer("0.0.0.0", port)
     println(s"SHUTDOWN server has exited")
+  }
+
+  def systemDebug(): Unit = {
+    println("System Info:");
+    println("java.version = " + System.getProperty("java.version"));
+    println("java.vm.name = " + System.getProperty("java.vm.name"));
+    println("java.vendor = " + System.getProperty("java.vendor"));
+    println("java.class.path = " + System.getProperty("java.class.path"));
+    println("os.name = " + System.getProperty("os.name"));
+    println("os.arch = " + System.getProperty("os.arch"));
+    println("os.version = " + System.getProperty("os.version"));
+    println("----------");
   }
 }

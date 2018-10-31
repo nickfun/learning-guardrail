@@ -19,7 +19,7 @@ class TodosController(val domain: String) extends TodosHandler {
 
   val todosDao = new TodosDao
 
-  def mergeTodo(t1: Todo, t2: Todo): Todo = {
+  def mergeTodos(t1: Todo, t2: Todo): Todo = {
     val id = List(t2.id, t1.id).flatten.headOption
     val title = List(t2.title, t1.title).flatten.headOption
     val order = List(t2.order, t1.order).flatten.headOption
@@ -74,7 +74,7 @@ class TodosController(val domain: String) extends TodosHandler {
         respond.NotFound
       } else {
         val withoutItem = todosDao.all.filterNot(_.id.getOrElse("_") == todoId)
-        val updatedTodo = mergeTodo(item.get, newTodo)
+        val updatedTodo = mergeTodos(item.get, newTodo)
         todosDao.all = withoutItem :+ updatedTodo
         respond.OK(updatedTodo)
       }

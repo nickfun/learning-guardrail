@@ -2,18 +2,19 @@ package gs.nick.tests
 
 import gs.nick.WebServer
 
-import scala.collection._
-import org.scalatest._
-import org.junit.Test
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.http.scaladsl.server._
+import akka.http.scaladsl.testkit.ScalatestRouteTest
 import Directives._
 import gs.nick.server.definitions.Todo
+import gs.nick.TodosController
+import gs.nick.server.AkkaHttpImplicits._
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.junit.Test
+import org.scalatest._
 import org.scalatest.FunSpec
-import gs.nick.server_tests.AkkaHttpImplicits._
+import org.scalatest.junit.JUnitRunner
+import scala.collection._
 
 
 
@@ -38,6 +39,23 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
         assert(status.intValue() === 200)
         assert(true === responseAs[String].contains("is running"))
       }
+    }
+  }
+
+  describe("Merge of Todos") {
+    val controller = new TodosController("http://localhost")
+    it("second param takes priority") {
+      val t1 = Todo(title=Option("title 1"))
+      val t2 = Todo(title=Option("title 2"))
+      val t3 = controller.mergeTodos(t1, t2)
+      assert(t2.title.get === t3.title.get)
+    }
+
+    it("first takes priority if second is None") {
+      val t1 = Todo(title=Option("title 1"))
+      val t2 = Todo()
+      val t3 = controller.mergeTodos(t1, t2)
+      assert(t1.title.get === t3.title.get)
     }
   }
 
@@ -83,8 +101,18 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
       }
     }
 
+    it("can add a TODO and sets the URL") {
+      val newTodo = Todo(title = Option("I am example 1"))
+      Post("/todos", newTodo) ~> routes ~> check {
+        assert(200 === status.intValue)
+        val returnedTodo = responseAs[Todo]
+        assert(true === returnedTodo.url.isDefined)
+        assert(newTodo.title.get === returnedTodo.title.get)
+      }
+    }
+
     it("can add a TODO and sets checked to False") {
-      val newTodo = Todo(title = Option("I am example 2"))
+      val newTodo = Todo(title = Option("I am example 1"))
       Post("/todos", newTodo) ~> routes ~> check {
         assert(200 === status.intValue)
         val returnedTodo = responseAs[Todo]
