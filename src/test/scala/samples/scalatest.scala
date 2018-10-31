@@ -26,12 +26,12 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
     "Access-Control-Allow-Methods"
   )
 
-  def getServer(): WebServer = {
+  def generateServer: WebServer = {
     new gs.nick.WebServer
   }
 
   describe("Basic routes") {
-    val routes = getServer().routes
+    val routes = generateServer.routes
 
     it("responds to root when running") {
       Get("/") ~> routes ~> check {
@@ -42,7 +42,7 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
   }
 
   describe("Supports CORS headers") {
-    val routes = getServer().routes
+    val routes = generateServer.routes
 
     it("supports CORS headers even on 404 routes") {
       Get("/nothing/should/404") ~> routes ~> check {
@@ -63,7 +63,7 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
   }
 
   describe("Get and list TODOs") {
-    val routes = getServer().routes
+    val routes = generateServer.routes
 
     it("lists of TODO starts empty") {
       Get("/todos") ~> routes ~> check {
@@ -74,12 +74,38 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
     }
 
     it("can add a TODO and sets the ID") {
-      val newTodo = Todo(title=Option("I am example 1"))
+      val newTodo = Todo(title = Option("I am example 1"))
       Post("/todos", newTodo) ~> routes ~> check {
         assert(200 === status.intValue)
         val returnedTodo = responseAs[Todo]
         assert(true === returnedTodo.id.isDefined)
         assert(newTodo.title.get === returnedTodo.title.get)
+      }
+    }
+
+    it("can add a TODO and sets checked to False") {
+      val newTodo = Todo(title = Option("I am example 2"))
+      Post("/todos", newTodo) ~> routes ~> check {
+        assert(200 === status.intValue)
+        val returnedTodo = responseAs[Todo]
+        assert(true === returnedTodo.completed.isDefined)
+        assert(false === returnedTodo.completed.get)
+      }
+    }
+
+    it("Adds three Todos and lists three back") {
+      val routes = generateServer.routes
+      val newTodo = Todo(title = Option("I am example 1"))
+      Get("/todos") ~> routes ~> check {
+        val list = responseAs[IndexedSeq[Todo]]
+        assert(true === list.isEmpty)
+      }
+      Post("/todos", newTodo) ~> routes
+      Post("/todos", newTodo) ~> routes
+      Post("/todos", newTodo) ~> routes
+      Get("/todos") ~> routes ~> check {
+        val list = responseAs[IndexedSeq[Todo]]
+        assert(3 === list.size)
       }
     }
   }
