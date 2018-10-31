@@ -15,7 +15,7 @@ object TodosDao {
   }
 }
 
-class TodosController(val urlFormatter: String => String) extends TodosHandler {
+class TodosController(val domain: String) extends TodosHandler {
 
   def mergeTodo(t1: Todo, t2: Todo): Todo = {
     val id = List(t2.id, t1.id).flatten.headOption
@@ -24,6 +24,10 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
     val completed = List(t2.completed, t1.completed).flatten.headOption
     val url = List(t2.url, t1.url).flatten.headOption
     Todo(id, title, order, completed, url)
+  }
+
+  def getUrl(id: String): String = {
+    s"$domain/todos/$id"
   }
 
   override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
@@ -37,7 +41,7 @@ class TodosController(val urlFormatter: String => String) extends TodosHandler {
     println("POST add todo")
     Future.successful {
       val newId = UUID.randomUUID().toString
-      val url = urlFormatter(newId)
+      val url = getUrl(newId)
       var x = newTodo.copy(id = Option(newId), url = Option(url))
       if (x.completed.isEmpty) {
         x = x.copy(completed = Option(false))

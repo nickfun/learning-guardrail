@@ -55,6 +55,12 @@
         <!-- If testkit used, explicitly declare dependency on akka-streams-testkit in same version as akka-actor-->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-testkit_2.12</artifactId>
+            <version>${akka.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-http-testkit_2.12</artifactId>
             <version>${akkahttp.version}</version>
             <scope>test</scope>
@@ -164,7 +170,7 @@
                     <junitxml>.</junitxml>
                     <filereports>TestSuiteReport.txt</filereports>
                     <!-- Comma separated list of JUnit test class names to execute -->
-                    <jUnitClasses>samples.AppTest</jUnitClasses>
+                    <jUnitClasses>gs.nick.tests.AppTestSuite</jUnitClasses>
                 </configuration>
                 <executions>
                     <execution>

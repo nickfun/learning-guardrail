@@ -12,7 +12,7 @@ import gs.nick.server.todos.TodosResource
 import scala.concurrent.ExecutionContext
 
 // Server definition
-object WebServer extends HttpApp {
+class WebServer extends HttpApp {
   implicit val restActorSystem: ActorSystem = ActorSystem(name="todos-api")
 
   implicit val executionContext: ExecutionContext = restActorSystem.dispatcher
@@ -35,12 +35,8 @@ object WebServer extends HttpApp {
     sys.env.getOrElse("DOMAIN", default)
   }
 
-  def defaultUrlFormatter(id: String): String = {
-    val domain = getDomain
-    s"$domain/todos/$id"
-  }
 
-  val todosController = new TodosController(defaultUrlFormatter)
+  val todosController = new TodosController(getDomain)
 
   override def routes: Route = {
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
@@ -48,13 +44,16 @@ object WebServer extends HttpApp {
     val allowMethods = RawHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,OPTIONS,PATCH")
     respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
+        // add some helper routes that are not part of the spec
         pathSingleSlash {
           get {
             complete("The server is running :-D")
           }
-        } ~ TodosResource.routes(todosController) ~ options {
+        // add a response for all OPTIONS requests to the browser pre-flight checks will pass
+        } ~ options {
           complete(HttpResponse(status = StatusCodes.NoContent))
-        }
+        // add the routes defined in our swagger spec
+        } ~ TodosResource.routes(todosController)
       }
     }
   }
@@ -62,12 +61,13 @@ object WebServer extends HttpApp {
 
 object App {
   def main(args: Array[String]) = {
-  	val port = WebServer.getPort
-    val domain = WebServer.getDomain
-    println(s"STARTUP  domain = $domain")
-    println(s"STARTUP  port = $port")
+    val server = new WebServer
+  	val port = server.getPort
+    val domain = server.getDomain
+    println(s"STARTUP domain = $domain")
+    println(s"STARTUP port = $port")
     println(s"STARTUP server will bind to port $port")
-    WebServer.startServer("0.0.0.0", port)
-    println(s"STARTDOWN server is past running")
+    server.startServer("0.0.0.0", port)
+    println(s"SHUTDOWN server has exited")
   }
 }
