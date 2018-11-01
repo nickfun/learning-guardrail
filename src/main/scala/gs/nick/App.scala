@@ -13,16 +13,10 @@ import scala.concurrent.ExecutionContext
 
 // Server definition
 class WebServer extends HttpApp {
-  implicit val restActorSystem: ActorSystem = ActorSystem(name="todos-api")
 
+  implicit val restActorSystem: ActorSystem = ActorSystem(name="todos-api")
   implicit val executionContext: ExecutionContext = restActorSystem.dispatcher
-  // Counterpart which materializes streams for the REST endpoints
-  implicit val materializer: ActorMaterializer = ActorMaterializer(
-    ActorMaterializerSettings(restActorSystem).withSupervisionStrategy { ex =>
-      println("akka supervisor got an error, will now restart", ex)
-      Supervision.restart
-    }
-  )
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   def getPort: Int = {
     val sPort = sys.env.getOrElse("PORT", "8080")
@@ -41,7 +35,7 @@ class WebServer extends HttpApp {
   override def routes: Route = {
 
     val homeRoutes = pathSingleSlash { get { complete("The server is running :-D ")}}
-    val controlleRoutes = TodosResource.routes(todosController)
+    val controllerRoutes = TodosResource.routes(todosController)
     val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
 
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
@@ -50,7 +44,7 @@ class WebServer extends HttpApp {
 
     respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
-        homeRoutes ~ controlleRoutes ~ corsRoutes
+        homeRoutes ~ controllerRoutes ~ corsRoutes
       }
     }
   }
@@ -64,20 +58,22 @@ object App {
     systemDebug()
     println(s"STARTUP domain = $domain")
     println(s"STARTUP port = $port")
-    println(s"STARTUP server will bind to port $port")
     server.startServer("0.0.0.0", port)
     println(s"SHUTDOWN server has exited")
   }
 
   def systemDebug(): Unit = {
-    println("System Info:");
-    println("java.version = " + System.getProperty("java.version"));
-    println("java.vm.name = " + System.getProperty("java.vm.name"));
-    println("java.vendor = " + System.getProperty("java.vendor"));
-    println("java.class.path = " + System.getProperty("java.class.path"));
-    println("os.name = " + System.getProperty("os.name"));
-    println("os.arch = " + System.getProperty("os.arch"));
-    println("os.version = " + System.getProperty("os.version"));
-    println("----------");
+    Seq(
+      "----------",
+      "System Info:",
+      "java.version = " + System.getProperty("java.version"),
+      "java.vm.name = " + System.getProperty("java.vm.name"),
+      "java.vendor = " + System.getProperty("java.vendor"),
+      "java.class.path = " + System.getProperty("java.class.path"),
+      "os.name = " + System.getProperty("os.name"),
+      "os.arch = " + System.getProperty("os.arch"),
+      "os.version = " + System.getProperty("os.version"),
+      "----------"
+    ).foreach(println)
   }
 }

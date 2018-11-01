@@ -34,7 +34,7 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
     it("responds to root when running") {
       Get("/") ~> routes ~> check {
         assert(status.intValue() === 200)
-        assert(true === responseAs[String].contains("is running"))
+        assert(true === responseAs[String].contains("server is running"))
       }
     }
   }
@@ -131,6 +131,37 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
       Get("/todos") ~> routes ~> check {
         val list = responseAs[IndexedSeq[Todo]]
         assert(3 === list.size)
+      }
+    }
+  }
+
+  describe("manipulate server todos") {
+    val routes = generateServer.routes
+
+    it("PATCH for update") {
+      val v1 = Todo(title=Option("First Version"))
+
+      Post("/todos", v1) ~> routes ~> check {
+
+        assert(200 === status.intValue)
+        val returnedTodo = responseAs[Todo]
+        assert(v1.title.get === returnedTodo.title.get)
+        assert(true === returnedTodo.url.isDefined)
+        val v2 = returnedTodo.copy(title=Option("It has changed"), completed=Option(true))
+
+        Patch(v2.url.get, v2) ~> routes ~> check {
+
+          assert(200 === status.intValue)
+          val updatedTodo = responseAs[Todo]
+          assert(v2.title.get === updatedTodo.title.get)
+        }
+
+        Get(returnedTodo.url.get) ~> routes ~> check {
+          val checkingTodo = responseAs[Todo]
+          assert(200 === status.intValue)
+          assert(true === checkingTodo.completed.get)
+        }
+
       }
     }
   }
