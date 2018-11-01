@@ -16,9 +16,6 @@ import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
 import scala.collection._
 
-
-
-@RunWith(classOf[JUnitRunner])
 class AppTestSuite extends FunSpec with ScalatestRouteTest {
 
   val corsHeaders = Seq(
