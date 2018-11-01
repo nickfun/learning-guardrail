@@ -16,6 +16,7 @@ import org.scalatest.FunSpec
 import org.scalatest.junit.JUnitRunner
 import scala.collection._
 
+// Testing an Akka HTTP app notes at https://doc.akka.io/docs/akka-http/current/routing-dsl/testkit.html#table-of-inspectors
 class AppTestSuite extends FunSpec with ScalatestRouteTest {
 
   val corsHeaders = Seq(
@@ -33,7 +34,7 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
 
     it("responds to root when running") {
       Get("/") ~> routes ~> check {
-        assert(status.intValue() === 200)
+        assert(status.intValue === 200)
         assert(true === responseAs[String].contains("server is running"))
       }
     }
@@ -60,7 +61,7 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
     val routes = generateServer.routes
 
     it("supports CORS headers even on 404 routes") {
-      Get("/nothing/should/404") ~> routes ~> check {
+      Get("/not/found/should/404") ~> routes ~> check {
 
         corsHeaders.foreach { name =>
           val headerOption = header(name)
@@ -73,6 +74,10 @@ class AppTestSuite extends FunSpec with ScalatestRouteTest {
     it("supports an OPTIONS request to get the headers") {
       Options("/todos") ~> routes ~> check {
         assert(204 === status.intValue)
+        corsHeaders.foreach { name =>
+          val headerOption = header(name)
+          assert(true === headerOption.isDefined)
+        }
       }
     }
   }

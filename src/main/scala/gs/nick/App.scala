@@ -12,6 +12,7 @@ import gs.nick.server.todos.TodosResource
 import scala.concurrent.ExecutionContext
 
 // Server definition
+// see https://doc.akka.io/docs/akka-http/current/routing-dsl/HttpApp.html
 class WebServer extends HttpApp {
 
   implicit val restActorSystem: ActorSystem = ActorSystem(name="todos-api")
