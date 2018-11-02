@@ -4,7 +4,7 @@ import java.util.UUID
 
 import gs.nick.server.definitions.Todo
 import gs.nick.server.todos.{TodosHandler, TodosResource => TodosResource}
-
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class TodosDao {
@@ -15,7 +15,7 @@ class TodosDao {
   }
 }
 
-class TodosController(val domain: String) extends TodosHandler {
+class TodosController(val domain: String)(implicit val ec: ExecutionContext) extends TodosHandler {
 
   val todosDao = new TodosDao
 
@@ -34,14 +34,14 @@ class TodosController(val domain: String) extends TodosHandler {
 
   override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
     println("GET todo list")
-    Future.successful {
+    Future {
       respond.OK(todosDao.all)
     }
   }
 
   override def addTodo(respond: TodosResource.addTodoResponse.type)(newTodo: Todo): Future[TodosResource.addTodoResponse] = {
     println("POST add todo")
-    Future.successful {
+    Future {
       val newId = UUID.randomUUID().toString
       val url = getUrl(newId)
       var x = newTodo.copy(id = Option(newId), url = Option(url))
@@ -55,7 +55,7 @@ class TodosController(val domain: String) extends TodosHandler {
 
   override def getTodoById(respond: TodosResource.getTodoByIdResponse.type)(todoId: String): Future[TodosResource.getTodoByIdResponse] = {
     println("GET todo by ID " + todoId)
-    Future.successful {
+    Future {
       val item = todosDao.find(todoId)
       if (item.isDefined) {
         respond.OK(item.get)
@@ -68,7 +68,7 @@ class TodosController(val domain: String) extends TodosHandler {
 
   override def updateTodoById(respond: TodosResource.updateTodoByIdResponse.type)(todoId: String, newTodo: Todo): Future[TodosResource.updateTodoByIdResponse] = {
     println("PATCH update todo by id " + todoId)
-    Future.successful {
+    Future {
       val item = todosDao.find(todoId)
       if (item.isEmpty) {
         respond.NotFound
@@ -83,7 +83,7 @@ class TodosController(val domain: String) extends TodosHandler {
 
   override def deleteAllTodos(respond: TodosResource.deleteAllTodosResponse.type)(): Future[TodosResource.deleteAllTodosResponse] = {
     println("DELETE list of todos")
-    Future.successful {
+    Future {
       todosDao.reset()
       respond.OK
     }
@@ -91,7 +91,7 @@ class TodosController(val domain: String) extends TodosHandler {
 
   override def deleteTodoById(respond: TodosResource.deleteTodoByIdResponse.type)(todoId: String): Future[TodosResource.deleteTodoByIdResponse] = {
     println("DELETE one todo " + todoId)
-    Future.successful {
+    Future {
       val item = todosDao.find(todoId)
       if (item.isEmpty) {
         respond.NotFound
