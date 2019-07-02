@@ -5,7 +5,7 @@
     <artifactId>todoapi</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Bird Sighting Server</description>
+    <description>Example REST API using Scala, Guardrail</description>
     <inceptionYear>2018</inceptionYear>
     <licenses>
         <license>
@@ -207,7 +207,7 @@
             <plugin>
                 <groupId>com.twilio</groupId>
                 <artifactId>guardrail-maven-plugin_2.12</artifactId>
-                <version>0.39.0</version>
+                <version>0.51.0</version>
                 <executions>
                     <execution>
                         <id>generate-app-server</id>

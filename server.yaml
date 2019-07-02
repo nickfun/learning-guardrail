@@ -17,8 +17,8 @@ schemes:
 - "https"
 - "http"
 externalDocs:
-  description: "Learn the Birds API"
-  url: "http://birds.nick.gs"
+  description: "Example REST API using Scala, Guardrail"
+  url: "https://github.com/nickfun/learning-guardrail"
 paths:
   /todos:
     delete:
