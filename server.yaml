@@ -1,167 +1,158 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
-  description: "Todo Backend API"
-  version: "1.0.0"
-  title: "Todos API"
-  termsOfService: "http://nick.gs/"
+  description: Todo Backend API
+  version: 1.0.0
+  title: Todos API
+  termsOfService: http://nick.gs/
   contact:
-    email: "nick@nick.gs"
+    email: nick@nick.gs
   license:
-    name: "GPL"
-    url: "http://www.fsf.org"
-host: "todos.nick.gs"
+    name: GPL
+    url: http://www.fsf.org
 tags:
-- name: "todos"
-  description: "Manipluation of Todos"
-schemes:
-- "https"
-- "http"
+  - name: todos
+    description: Manipluation of Todos
 externalDocs:
-  description: "Example REST API using Scala, Guardrail"
-  url: "https://github.com/nickfun/learning-guardrail"
+  description: Example REST API using Scala, Guardrail
+  url: https://github.com/nickfun/learning-guardrail
 paths:
   /todos:
     delete:
       tags:
-      - "todos"
-      summary: "remove all todos"
+        - todos
+      summary: remove all todos
       description: ""
-      operationId: "deleteAllTodos"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
+      operationId: deleteAllTodos
       responses:
-        200:
-          description: "successful operation"
+        "200":
+          description: successful operation
     post:
       tags:
-      - "todos"
-      summary: "Add a new todo"
+        - todos
+      summary: Add a new todo
       description: ""
-      operationId: "addTodo"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "newTodo"
-        description: "Todo Object"
-        required: true
-        schema:
-          $ref: "#/definitions/Todo"
+      operationId: addTodo
+      requestBody:
+        $ref: "#/components/requestBodies/Todo"
       responses:
-        400:
-          description: "Invalid input"
-          schema:
-            type: "string"
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Todo"
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: string
     get:
       tags:
-      - "todos"
-      summary: "view all known Todos"
+        - todos
+      summary: view all known Todos
       description: ""
-      operationId: "getTodoList"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
+      operationId: getTodoList
       responses:
-        500:
-          description: "Database error"
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Todo"
-  /todos/{todoId}:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        "500":
+          description: Database error
+  "/todos/{todoId}":
     get:
       tags:
-      - "todos"
-      summary: "Details of one Todo"
+        - todos
+      summary: Details of one Todo
       description: ""
-      operationId: "getTodoById"
-      produces:
-      - "application/json"
+      operationId: getTodoById
       parameters:
-      - name: "todoId"
-        in: "path"
-        description: ""
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
+        - name: todoId
+          in: path
+          description: ""
+          required: true
           schema:
-            $ref: "#/definitions/Todo"
-        404:
-          description: "Invalid Todo ID value"
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "404":
+          description: Invalid Todo ID value
     delete:
       tags:
-      - "todos"
-      summary: "delete a single todo"
+        - todos
+      summary: delete a single todo
       description: ""
-      operationId: "deleteTodoById"
-      produces:
-      - "application/json"
+      operationId: deleteTodoById
       parameters:
-      - name: "todoId"
-        in: "path"
-        description: ""
-        required: true
-        type: "string"
+        - name: todoId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
       responses:
-        200:
-          description: "successful operation"
-        404:
-          description: "can not find todo"
+        "200":
+          description: successful operation
+        "404":
+          description: can not find todo
     patch:
       tags:
-      - "todos"
-      summary: "Update an existing Todo"
+        - todos
+      summary: Update an existing Todo
       description: ""
-      operationId: "updateTodoById"
-      produces:
-      - "application/json"
-      consumes:
-      - "application/json"
+      operationId: updateTodoById
       parameters:
-      - name: "todoId"
-        in: "path"
-        description: ""
-        required: true
-        type: "string"
-      - in: "body"
-        name: "newTodo"
-        description: "Todo Object"
-        required: true
-        schema:
-          $ref: "#/definitions/Todo"
-      responses:
-        200:
-          description: "successful operation"
+        - name: todoId
+          in: path
+          description: ""
+          required: true
           schema:
-            $ref: "#/definitions/Todo"
-        404:
-          description: "Todo not found"
-
-definitions:
-  Todo:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      title:
-        type: "string"
-      order:
-        type: "integer"
-        format: "int32"
-      completed:
-        type: "boolean"
-      url:
-        type: "string"
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Todo"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        "404":
+          description: Todo not found
+servers:
+  - url: https://todos.nick.gs
+  - url: http://todos.nick.gs
+components:
+  requestBodies:
+    Todo:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Todo"
+      description: Todo Object
+      required: true
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        order:
+          type: integer
+          format: int32
+        completed:
+          type: boolean
+        url:
+          type: string
