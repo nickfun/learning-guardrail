@@ -19,19 +19,18 @@ class WebServer extends HttpApp {
   implicit val executionContext: ExecutionContext = restActorSystem.dispatcher
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  def getPort: Int = {
+  val port: Int = {
     val sPort = sys.env.getOrElse("PORT", "8080")
     sPort.toInt
   }
 
-  def getDomain: String = {
-    val port = getPort
+  val domain: String = {
     val default = s"http://localhost:$port"
     sys.env.getOrElse("DOMAIN", default)
   }
 
 
-  val todosController = new TodosController(getDomain)
+  val todosController = new TodosController(domain)
 
   override def routes: Route = {
 
@@ -54,8 +53,8 @@ class WebServer extends HttpApp {
 object App {
   def main(args: Array[String]) = {
     val server = new WebServer
-  	val port = server.getPort
-    val domain = server.getDomain
+  	val port = server.port
+    val domain = server.domain
     systemDebug()
     println(s"STARTUP domain = $domain")
     println(s"STARTUP port = $port")

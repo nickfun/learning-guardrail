@@ -23,9 +23,10 @@
         <scala.compat.version>2.12</scala.compat.version>
         <spec2.version>4.2.0</spec2.version>
         <project.basedir>.</project.basedir>
-        <akka.version>2.5.16</akka.version>
-        <akkahttp.version>10.1.5</akkahttp.version>
-        <circe.version>0.9.3</circe.version>
+        <akka.version>2.5.19</akka.version>
+        <akkahttp.version>10.1.7</akkahttp.version>
+        <circe.version>0.12.1</circe.version>
+        <guardrail.version>0.56.0</guardrail.version>
     </properties>
 
     <dependencies>
@@ -87,11 +88,11 @@
             <version>${circe.version}</version>
             <artifactId>circe-parser_2.12</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.circe</groupId>
-            <artifactId>circe-java8_2.12</artifactId>
-            <version>${circe.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.circe</groupId>-->
+<!--            <artifactId>circe-java8_2.12</artifactId>-->
+<!--            <version>${circe.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-generic-extras_2.12</artifactId>
@@ -207,7 +208,7 @@
             <plugin>
                 <groupId>com.twilio</groupId>
                 <artifactId>guardrail-maven-plugin_2.12</artifactId>
-                <version>0.51.0</version>
+                <version>${guardrail.version}</version>
                 <executions>
                     <execution>
                         <id>generate-app-server</id>

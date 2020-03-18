@@ -35,7 +35,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
   override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
     println("GET todo list")
     Future {
-      respond.OK(todosDao.all)
+      respond.OK(todosDao.all.to[Vector])
     }
   }
 
