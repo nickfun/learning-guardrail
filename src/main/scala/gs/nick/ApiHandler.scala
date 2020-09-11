@@ -32,14 +32,15 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     s"$domain/todos/$id"
   }
 
-  override def getTodoList(respond: TodosResource.getTodoListResponse.type)(): Future[TodosResource.getTodoListResponse] = {
+
+  override def getTodoList(respond: TodosResource.GetTodoListResponse.type)(): Future[TodosResource.GetTodoListResponse] = {
     println("GET todo list")
     Future {
       respond.OK(todosDao.all.to[Vector])
     }
   }
 
-  override def addTodo(respond: TodosResource.addTodoResponse.type)(newTodo: Todo): Future[TodosResource.addTodoResponse] = {
+  override def addTodo(respond: TodosResource.AddTodoResponse.type)(newTodo: Todo): Future[TodosResource.AddTodoResponse] = {
     println("POST add todo")
     Future {
       val newId = UUID.randomUUID().toString
@@ -53,7 +54,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     }
   }
 
-  override def getTodoById(respond: TodosResource.getTodoByIdResponse.type)(todoId: String): Future[TodosResource.getTodoByIdResponse] = {
+  override def getTodoById(respond: TodosResource.GetTodoByIdResponse.type)(todoId: String): Future[TodosResource.GetTodoByIdResponse] = {
     println("GET todo by ID " + todoId)
     Future {
       val item = todosDao.find(todoId)
@@ -66,7 +67,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     }
   }
 
-  override def updateTodoById(respond: TodosResource.updateTodoByIdResponse.type)(todoId: String, newTodo: Todo): Future[TodosResource.updateTodoByIdResponse] = {
+  override def updateTodoById(respond: TodosResource.UpdateTodoByIdResponse.type)(todoId: String, newTodo: Todo): Future[TodosResource.UpdateTodoByIdResponse] = {
     println("PATCH update todo by id " + todoId)
     Future {
       val item = todosDao.find(todoId)
@@ -81,7 +82,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     }
   }
 
-  override def deleteAllTodos(respond: TodosResource.deleteAllTodosResponse.type)(): Future[TodosResource.deleteAllTodosResponse] = {
+  override def deleteAllTodos(respond: TodosResource.DeleteAllTodosResponse.type)(): Future[TodosResource.DeleteAllTodosResponse] = {
     println("DELETE list of todos")
     Future {
       todosDao.reset()
@@ -89,7 +90,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     }
   }
 
-  override def deleteTodoById(respond: TodosResource.deleteTodoByIdResponse.type)(todoId: String): Future[TodosResource.deleteTodoByIdResponse] = {
+  override def deleteTodoById(respond: TodosResource.DeleteTodoByIdResponse.type)(todoId: String): Future[TodosResource.DeleteTodoByIdResponse] = {
     println("DELETE one todo " + todoId)
     Future {
       val item = todosDao.find(todoId)
