@@ -37,6 +37,7 @@ class WebServer extends HttpApp {
     val homeRoutes = pathSingleSlash { get { complete("The server is running :-D ")}}
     val controllerRoutes = TodosResource.routes(todosController)
     val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
+    val custom404 = complete(404, "404 resource not found on my sweet server")
 
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
     val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
@@ -44,7 +45,7 @@ class WebServer extends HttpApp {
 
     respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
-        homeRoutes ~ controllerRoutes ~ corsRoutes
+        homeRoutes ~ controllerRoutes ~ corsRoutes ~ custom404
       }
     }
   }
