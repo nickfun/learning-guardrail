@@ -9,17 +9,12 @@ info:
   license:
     name: GPL
     url: http://www.fsf.org
-tags:
-  - name: todos
-    description: Manipluation of Todos
 externalDocs:
   description: Example REST API using Scala, Guardrail
   url: https://github.com/nickfun/learning-guardrail
 paths:
   /todos:
     delete:
-      tags:
-        - todos
       summary: remove all todos
       description: ""
       operationId: deleteAllTodos
@@ -27,8 +22,6 @@ paths:
         "200":
           description: successful operation
     post:
-      tags:
-        - todos
       summary: Add a new todo
       description: ""
       operationId: addTodo
@@ -48,8 +41,6 @@ paths:
               schema:
                 type: string
     get:
-      tags:
-        - todos
       summary: view all known Todos
       description: ""
       operationId: getTodoList
@@ -66,8 +57,6 @@ paths:
           description: Database error
   "/todos/{todoId}":
     get:
-      tags:
-        - todos
       summary: Details of one Todo
       description: ""
       operationId: getTodoById
@@ -88,8 +77,6 @@ paths:
         "404":
           description: Invalid Todo ID value
     delete:
-      tags:
-        - todos
       summary: delete a single todo
       description: ""
       operationId: deleteTodoById
@@ -106,8 +93,6 @@ paths:
         "404":
           description: can not find todo
     patch:
-      tags:
-        - todos
       summary: Update an existing Todo
       description: ""
       operationId: updateTodoById
