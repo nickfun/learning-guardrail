@@ -1,16 +1,18 @@
 package gs.nick
 
-import java.util.UUID
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import generated.server.{Handler => TodosHandler}
-import generated.server.{Resource => TodosResource}
 import generated.server.definitions.Todo
+import generated.server.{Handler => TodosHandler, Resource => TodosResource}
+
+import java.util.UUID
+import scala.concurrent.{ExecutionContext, Future}
 
 class TodosDao {
   var all: Vector[Todo] = Vector.empty
-  def reset(): Unit = { all = Vector.empty }
+
+  def reset(): Unit = {
+    all = Vector.empty
+  }
+
   def find(x: String): Option[Todo] = {
     all.find(p => p.id.contains(x))
   }
@@ -20,21 +22,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
 
   val todosDao = new TodosDao
 
-  def mergeTodos(t1: Todo, t2: Todo): Todo = {
-    val id = List(t2.id, t1.id).flatten.headOption
-    val title = List(t2.title, t1.title).flatten.headOption
-    val order = List(t2.order, t1.order).flatten.headOption
-    val completed = List(t2.completed, t1.completed).flatten.headOption
-    val url = List(t2.url, t1.url).flatten.headOption
-    Todo(id, title, order, completed, url)
-  }
-
-  def getUrl(id: String): String = {
-    s"$domain/todos/$id"
-  }
-
-
-  override def getTodoList(respond: TodosResource.GetTodoListResponse.type )(): Future[TodosResource.GetTodoListResponse] = {
+  override def getTodoList(respond: TodosResource.GetTodoListResponse.type)(): Future[TodosResource.GetTodoListResponse] = {
     println("GET todo list")
     Future {
       respond.OK(todosDao.all)
@@ -53,6 +41,10 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
       todosDao.all = todosDao.all :+ x
       respond.OK(x)
     }
+  }
+
+  def getUrl(id: String): String = {
+    s"$domain/todos/$id"
   }
 
   override def getTodoById(respond: TodosResource.GetTodoByIdResponse.type)(todoId: String): Future[TodosResource.GetTodoByIdResponse] = {
@@ -81,6 +73,15 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
         respond.OK(updatedTodo)
       }
     }
+  }
+
+  def mergeTodos(t1: Todo, t2: Todo): Todo = {
+    val id = List(t2.id, t1.id).flatten.headOption
+    val title = List(t2.title, t1.title).flatten.headOption
+    val order = List(t2.order, t1.order).flatten.headOption
+    val completed = List(t2.completed, t1.completed).flatten.headOption
+    val url = List(t2.url, t1.url).flatten.headOption
+    Todo(id, title, order, completed, url)
   }
 
   override def deleteAllTodos(respond: TodosResource.DeleteAllTodosResponse.type)(): Future[TodosResource.DeleteAllTodosResponse] = {

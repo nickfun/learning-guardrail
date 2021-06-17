@@ -39,6 +39,7 @@ class WebServer extends HttpApp {
     val controllerRoutes = TodosResource.routes(todosController)
     val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
     val custom404 = complete(404, "404 resource not found on my sweet server")
+    val debugRoute = path("debug") { get { complete(App.systemInfo()) } }
 
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
     val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
@@ -46,7 +47,7 @@ class WebServer extends HttpApp {
 
     respondWithHeaders(allowHeader, allowOrigin, allowMethods) {
       Route.seal {
-        homeRoutes ~ controllerRoutes ~ corsRoutes ~ custom404
+        homeRoutes ~ controllerRoutes ~ corsRoutes ~ debugRoute ~ custom404
       }
     }
   }
@@ -64,7 +65,9 @@ object App {
     println(s"SHUTDOWN server has exited")
   }
 
-  def systemDebug(): Unit = {
+  def systemDebug(): Unit = println(systemInfo().mkString("\n"))
+
+  def systemInfo(): Seq[String] = {
     Seq(
       "----------",
       "System Info:",
@@ -76,6 +79,6 @@ object App {
       "os.arch = " + System.getProperty("os.arch"),
       "os.version = " + System.getProperty("os.version"),
       "----------"
-    ).foreach(println)
+    )
   }
 }
