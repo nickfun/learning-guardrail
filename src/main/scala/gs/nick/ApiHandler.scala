@@ -2,16 +2,17 @@ package gs.nick
 
 import java.util.UUID
 
-import gs.nick.server.definitions.Todo
-import gs.nick.server.todos.{TodosHandler, TodosResource => TodosResource}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import generated.server.{Handler => TodosHandler}
+import generated.server.{Resource => TodosResource}
+import generated.server.definitions.Todo
 
 class TodosDao {
-  var all: IndexedSeq[Todo] = IndexedSeq.empty
-  def reset(): Unit = { all = IndexedSeq.empty }
+  var all: Vector[Todo] = Vector.empty
+  def reset(): Unit = { all = Vector.empty }
   def find(x: String): Option[Todo] = {
-    all.find(t => t.id.isDefined && t.id.get == x)
+    all.find(p => p.id.contains(x))
   }
 }
 
@@ -33,10 +34,10 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
   }
 
 
-  override def getTodoList(respond: TodosResource.GetTodoListResponse.type)(): Future[TodosResource.GetTodoListResponse] = {
+  override def getTodoList(respond: TodosResource.GetTodoListResponse.type )(): Future[TodosResource.GetTodoListResponse] = {
     println("GET todo list")
     Future {
-      respond.OK(todosDao.all.to[Vector])
+      respond.OK(todosDao.all)
     }
   }
 

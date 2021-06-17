@@ -1,25 +1,18 @@
 package gs.nick.tests
 
-import gs.nick.WebServer
-
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import Directives._
-import gs.nick.server.definitions.Todo
-import gs.nick.TodosController
-import gs.nick.server.AkkaHttpImplicits._
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.scalatest._
-import org.scalatest.FunSpec
-import org.scalatest.junit.JUnitRunner
+import generated.server.AkkaHttpImplicits._
+import generated.server.definitions.Todo
+import gs.nick.{TodosController, WebServer}
+import org.scalatest.funspec.AnyFunSpec
+
+
 import scala.collection._
 
 // Testing an Akka HTTP app notes at https://doc.akka.io/docs/akka-http/current/routing-dsl/testkit.html#table-of-inspectors
-class AppTestSuite extends FunSpec with ScalatestRouteTest {
+class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
 
-  val corsHeaders = Seq(
+  val corsHeaders: Seq[String] = Seq(
     "Access-Control-Allow-Headers",
     "Access-Control-Allow-Origin",
     "Access-Control-Allow-Methods"

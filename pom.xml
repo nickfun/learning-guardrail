@@ -19,14 +19,15 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.12.6</scala.version>
-        <scala.compat.version>2.12</scala.compat.version>
-        <spec2.version>4.2.0</spec2.version>
+        <scala.version>2.13.3</scala.version>
+        <scala.compat.version>2.13</scala.compat.version>
+        <scalatest.version>3.2.9</scalatest.version>
+        <spec2.version>4.12.0</spec2.version>
         <project.basedir>.</project.basedir>
-        <akka.version>2.5.19</akka.version>
-        <akkahttp.version>10.1.7</akkahttp.version>
-        <circe.version>0.12.1</circe.version>
-        <guardrail.version>0.61.0</guardrail.version>
+        <akka.version>2.6.15</akka.version>
+        <akkahttp.version>10.2.4</akkahttp.version>
+        <circe.version>0.14.1</circe.version>
+        <guardrail.version>0.64.0</guardrail.version>
     </properties>
 
     <dependencies>
@@ -39,35 +40,35 @@
         <!-- AKKA -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor_2.12</artifactId>
+            <artifactId>akka-actor_${scala.compat.version}</artifactId>
             <version>${akka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream_2.12</artifactId>
+            <artifactId>akka-stream_${scala.compat.version}</artifactId>
             <version>${akka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http_2.12</artifactId>
+            <artifactId>akka-http_${scala.compat.version}</artifactId>
             <version>${akkahttp.version}</version>
         </dependency>
         <!-- AKKA and tests -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-testkit_2.12</artifactId>
+            <artifactId>akka-testkit_${scala.compat.version}</artifactId>
             <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http-testkit_2.12</artifactId>
+            <artifactId>akka-http-testkit_${scala.compat.version}</artifactId>
             <version>${akkahttp.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream-testkit_2.12</artifactId>
+            <artifactId>akka-stream-testkit_${scala.compat.version}</artifactId>
             <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
@@ -76,17 +77,17 @@
         <dependency>
             <groupId>io.circe</groupId>
             <version>${circe.version}</version>
-            <artifactId>circe-core_2.12</artifactId>
+            <artifactId>circe-core_${scala.compat.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <version>${circe.version}</version>
-            <artifactId>circe-generic_2.12</artifactId>
+            <artifactId>circe-generic_${scala.compat.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <version>${circe.version}</version>
-            <artifactId>circe-parser_2.12</artifactId>
+            <artifactId>circe-parser_${scala.compat.version}</artifactId>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>io.circe</groupId>-->
@@ -103,7 +104,7 @@
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.compat.version}</artifactId>
-            <version>3.0.5</version>
+            <version>${scalatest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -219,7 +220,7 @@
                             <kind>server</kind>
                             <language>scala</language>
                             <specPath>${project.basedir}/server.yaml</specPath>
-                            <packageName>gs.nick.server</packageName>
+                            <packageName>generated.server</packageName>
                         </configuration>
                     </execution>
                 </executions>

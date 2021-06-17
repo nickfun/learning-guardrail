@@ -3,11 +3,12 @@ package gs.nick
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.model.headers.RawHeader
-import gs.nick.server.AkkaHttpImplicits._
+
 import akka.http.scaladsl.server.HttpApp
 import akka.http.scaladsl.server.Route
 import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision}
-import gs.nick.server.todos.TodosResource
+import generated.server.AkkaHttpImplicits._
+import generated.server.{Resource => TodosResource}
 
 import scala.concurrent.ExecutionContext
 
