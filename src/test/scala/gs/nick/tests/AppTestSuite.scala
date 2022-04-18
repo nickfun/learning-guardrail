@@ -164,4 +164,12 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
     }
   }
 
+  describe("misc") {
+    it("builds a string from a map[string,string]") {
+      val items = scala.collection.immutable.Map("one" ->"one", "two" -> "two")
+      val result: String = gs.nick.App.mapToStringTable(items)
+      assert(result.length > 3)
+    }
+  }
+
 }
