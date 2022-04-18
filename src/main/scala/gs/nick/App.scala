@@ -39,7 +39,7 @@ class WebServer extends HttpApp {
     val controllerRoutes = TodosResource.routes(todosController)
     val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
     val custom404 = complete(404, "404 resource not found on my sweet server")
-    val debugRoute = path("debug") { get { complete(App.systemInfo()) } }
+    val debugRoute = path("debug") { get { complete(App.systemInfo(domain, port)) } }
 
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
     val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
@@ -58,27 +58,36 @@ object App {
     val server = new WebServer
   	val port = server.port
     val domain = server.domain
-    systemDebug()
-    println(s"STARTUP domain = $domain")
-    println(s"STARTUP port = $port")
+    systemDebug(domain, port)
     server.startServer("0.0.0.0", port)
     println(s"SHUTDOWN server has exited")
+    System.exit(0)
   }
 
-  def systemDebug(): Unit = println(systemInfo().mkString("\n"))
+  def systemDebug(domain: String, port: Int): Unit = {
+    val info = systemInfo(domain, port)
+    println(mapToStringTable(info))
+  }
 
-  def systemInfo(): Seq[String] = {
-    Seq(
-      "----------",
-      "System Info:",
-      "java.version = " + System.getProperty("java.version"),
-      "java.vm.name = " + System.getProperty("java.vm.name"),
-      "java.vendor = " + System.getProperty("java.vendor"),
-      "java.class.path = " + System.getProperty("java.class.path"),
-      "os.name = " + System.getProperty("os.name"),
-      "os.arch = " + System.getProperty("os.arch"),
-      "os.version = " + System.getProperty("os.version"),
-      "----------"
+  def mapToStringTable(items: Map[String, String]): String = {
+    val len: Int = items.keySet.maxBy(_.length).length
+    val fmt = s"%-${len}s %s"
+    items.toSeq.sortBy(x => x._1).map { case (key, value) =>
+      String.format(fmt, key, value)
+    }.mkString("\n")
+  }
+
+  def systemInfo(domain: String, port: Int): Map[String, String] = {
+    Map[String, String](
+      "java.version" -> System.getProperty("java.version"),
+      "java.vm.name" -> System.getProperty("java.vm.name"),
+      "java.vendor" -> System.getProperty("java.vendor"),
+      "java.class.path" -> System.getProperty("java.class.path"),
+      "os.name" -> System.getProperty("os.name"),
+      "os.arch" -> System.getProperty("os.arch"),
+      "os.version" -> System.getProperty("os.version"),
+      "Domain" -> domain,
+      "Port" -> port.toString,
     )
   }
 }
