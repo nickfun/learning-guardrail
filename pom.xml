@@ -242,7 +242,28 @@
                             <packageName>generated.server</packageName>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>generate-client</id>
+                        <goals>
+                            <goal>generate-sources</goal>
+                        </goals>
+                        <configuration>
+                            <kind>client</kind>
+                            <language>scala</language>
+                            <framework>akka-http</framework>
+                            <specPath>${project.basedir}/server.yaml</specPath>
+                            <packageName>generated.TodoApiClient</packageName>
+                        </configuration>
+                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
