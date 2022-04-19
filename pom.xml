@@ -27,7 +27,7 @@
         <akka.version>2.6.15</akka.version>
         <akkahttp.version>10.2.4</akkahttp.version>
         <circe.version>0.14.1</circe.version>
-        <guardrail.version>0.64.0</guardrail.version>
+        <guardrail.version>0.70.0</guardrail.version>
     </properties>
 
     <dependencies>
@@ -96,8 +96,15 @@
 <!--        </dependency>-->
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-generic-extras_2.12</artifactId>
+            <artifactId>circe-generic-extras_${scala.compat.version}</artifactId>
             <version>${circe.version}</version>
+        </dependency>
+
+        <!-- guardrail? -->
+        <dependency>
+            <groupId>dev.guardrail</groupId>
+            <artifactId>guardrail_${scala.compat.version}</artifactId>
+            <version>${guardrail.version}</version>
         </dependency>
 
         <!-- UNIT TESTS -->
@@ -202,13 +209,24 @@
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
+                            <!-- filter out signed jars, from https://stackoverflow.com/questions/34855649/ -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.twilio</groupId>
-                <artifactId>guardrail-maven-plugin_2.12</artifactId>
+                <groupId>dev.guardrail</groupId>
+                <artifactId>guardrail-maven-plugin</artifactId>
                 <version>${guardrail.version}</version>
                 <executions>
                     <execution>
@@ -219,6 +237,7 @@
                         <configuration>
                             <kind>server</kind>
                             <language>scala</language>
+                            <framework>akka-http</framework>
                             <specPath>${project.basedir}/server.yaml</specPath>
                             <packageName>generated.server</packageName>
                         </configuration>
