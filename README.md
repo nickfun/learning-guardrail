@@ -1,6 +1,6 @@
-# Learning Twilio Guardrail
+# Learning Guardrail
 
-An example project while I learn how [Twilio Guardrail](https://github.com/twilio/guardrail) works.
+An example project while I learn how [Guardrail](https://github.com/guardrail-dev/guardrail) works.
 
 Builds a Akka-Http server that can implements a "todo backend", see https://www.todobackend.com
 
