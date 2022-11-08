@@ -34,7 +34,7 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
   }
 
   describe("Merge of Todos") {
-    val controller = new TodosController("http://localhost")
+    val controller = new TodosController("localhost", false)
     it("second param takes priority") {
       val t1 = Todo(title=Option("title 1"))
       val t2 = Todo(title=Option("title 2"))
@@ -47,6 +47,21 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
       val t2 = Todo()
       val t3 = controller.mergeTodos(t1, t2)
       assert(t1.title.get === t3.title.get)
+    }
+  }
+
+  describe("https flag") {
+
+    it("http: prefix when disabled") {
+      val controller = new TodosController("localhost", false)
+      val result = controller.getUrl("id1")
+      assert(result.startsWith("http://") === true)
+    }
+
+    it("https: prefix when enabled") {
+      val controller = new TodosController("localhost", true)
+      val result = controller.getUrl("id1")
+      assert(result.startsWith("https://") === true)
     }
   }
 
@@ -138,9 +153,9 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
 
     it("PATCH for update") {
       val v1 = Todo(title=Option("First Version"))
+      println(v1)
 
       Post("/todos", v1) ~> routes ~> check {
-
         assert(200 === status.intValue)
         val returnedTodo = responseAs[Todo]
         assert(v1.title.get === returnedTodo.title.get)
@@ -148,7 +163,6 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
         val v2 = returnedTodo.copy(title=Option("It has changed"), completed=Option(true))
 
         Patch(v2.url.get, v2) ~> routes ~> check {
-
           assert(200 === status.intValue)
           val updatedTodo = responseAs[Todo]
           assert(v2.title.get === updatedTodo.title.get)
@@ -158,6 +172,7 @@ class AppTestSuite extends AnyFunSpec with ScalatestRouteTest {
           val checkingTodo = responseAs[Todo]
           assert(200 === status.intValue)
           assert(true === checkingTodo.completed.get)
+          assert(v2.title.get === checkingTodo.title.get)
         }
 
       }

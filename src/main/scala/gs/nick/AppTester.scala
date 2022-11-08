@@ -5,7 +5,7 @@ import akka.http.scaladsl.settings.ConnectionPoolSettings
 import akka.http.scaladsl._
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import generated.todoApiClient.AkkaHttpImplicits.HttpClient
-import generated.todoApiClient.Client
+import generated.todoApiClient.{AddTodoResponse, Client}
 import generated.todoApiClient.definitions.Todo
 import cats.implicits._
 import cats.data.EitherT
@@ -31,24 +31,42 @@ class AppTester(server: String) {
     client
   }
 
+  def getTodo(input: AddTodoResponse): EitherT[Future, Either[Throwable, HttpResponse], Todo] = {
+    val myError: Either[Throwable, HttpResponse] = Left(new Exception("could not get ID"))
+    val optionResult: Option[Todo] = input match {
+      case AddTodoResponse.OK(value) => Some(value)
+      case AddTodoResponse.BadRequest(value) => None
+    }
+    EitherT[Future, Either[Throwable, HttpResponse], Todo](Future.successful {
+      optionResult.toRight(myError)
+    })
+  }
+
   def test(): EitherT[Future, Either[Throwable, HttpResponse], String] = {
+    val NEW_TITLE = "hello world I am different title"
     val client = buildClient()
     for {
       delete <- client.deleteAllTodos()
       _ <- client.addTodo(Todo(title = Some("The 1st todo!")))
-      second <- client.addTodo(Todo(title = Some("The 2nd todo!")))
+      secondResponse <- client.addTodo(Todo(title = Some("The 2nd todo!")))
+      secondTodo <- getTodo(secondResponse)
       all <- client.getTodoList()
+      updatedSecond <- client.updateTodoById(secondTodo.id.get, secondTodo.copy(title=Some(NEW_TITLE)))
     } yield {
-      all.fold(
-        handleOK = (result) => {
-          if (result.length == 2) {
-            "Worked as expected"
+      updatedSecond.fold(
+        handleOK = (todo) => {
+          if (todo.title.contains(NEW_TITLE)) {
+            println("Success on edit of todo")
+            "good"
           } else {
-            s"Failed, i deleted all and added two, but result as size ${result.length}"
+            println("Error on edit of todo!")
+            println(todo)
+            "bad"
           }
         },
-        handleInternalServerError = {
-          "error! all bad!"
+        handleNotFound =   {
+          println("Failed to edit the todo, I got a 404 instead!")
+          "bad"
         }
       )
     }
@@ -59,7 +77,7 @@ class AppTester(server: String) {
 object AppTester {
   def main(args: Array[String]): Unit = {
     implicit val ec = ExecutionContext.global
-    val host = args.headOption.getOrElse("https://todo-backend-guardrail.herokuapp.com")
+    val host = args.headOption.getOrElse("http://localhost:8080/")
     println(s"I WILL TEST $host")
     val test = new AppTester(host)
     test.test().value.onComplete { r =>

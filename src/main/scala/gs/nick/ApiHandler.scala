@@ -18,7 +18,9 @@ class TodosDao {
   }
 }
 
-class TodosController(val domain: String)(implicit val ec: ExecutionContext) extends TodosHandler {
+class TodosController(val domain: String, val useSecure: Boolean)(implicit val ec: ExecutionContext) extends TodosHandler {
+
+  val prefix = if (useSecure) "https://" else "http://"
 
   val todosDao = new TodosDao
 
@@ -44,7 +46,8 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
   }
 
   def getUrl(id: String): String = {
-    s"$domain/todos/$id"
+
+    s"$prefix$domain/todos/$id"
   }
 
   override def getTodoById(respond: TodosResource.GetTodoByIdResponse.type)(todoId: String): Future[TodosResource.GetTodoByIdResponse] = {
@@ -65,6 +68,7 @@ class TodosController(val domain: String)(implicit val ec: ExecutionContext) ext
     Future {
       val item = todosDao.find(todoId)
       if (item.isEmpty) {
+        println(s"PATCH, but could not find ID in the Dao $todoId")
         respond.NotFound
       } else {
         val withoutItem = todosDao.all.filterNot(_.id.getOrElse("_") == todoId)

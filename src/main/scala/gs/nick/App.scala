@@ -26,12 +26,15 @@ class WebServer extends HttpApp {
   }
 
   val domain: String = {
-    val default = s"http://localhost:$port"
+    val default = s"localhost:$port"
     sys.env.getOrElse("DOMAIN", default)
   }
 
+  val useHttps: Boolean = {
+    sys.env.get("ENABLE_HTTPS").map(e => e.toUpperCase() == "ON").getOrElse(false)
+  }
 
-  val todosController = new TodosController(domain)
+  val todosController = new TodosController(domain, useHttps)
 
   override def routes: Route = {
 
@@ -39,7 +42,7 @@ class WebServer extends HttpApp {
     val controllerRoutes = TodosResource.routes(todosController)
     val corsRoutes = options { complete(HttpResponse(status = StatusCodes.NoContent))}
     val custom404 = complete(404, "404 resource not found on my sweet server")
-    val debugRoute = path("debug") { get { complete(App.systemInfo(domain, port)) } }
+    val debugRoute = path("debug") { get { complete(App.systemInfo(domain, port, useHttps)) } }
 
     val allowHeader = RawHeader("Access-Control-Allow-Headers", "content-type")
     val allowOrigin = RawHeader("Access-Control-Allow-Origin", "*")
@@ -58,14 +61,14 @@ object App {
     val server = new WebServer
   	val port = server.port
     val domain = server.domain
-    systemDebug(domain, port)
+    systemDebug(domain, port, server.useHttps)
     server.startServer("0.0.0.0", port)
     println(s"SHUTDOWN server has exited")
     System.exit(0)
   }
 
-  def systemDebug(domain: String, port: Int): Unit = {
-    val info = systemInfo(domain, port)
+  def systemDebug(domain: String, port: Int, useHttps: Boolean): Unit = {
+    val info = systemInfo(domain, port, useHttps)
     println(mapToStringTable(info))
   }
 
@@ -77,7 +80,7 @@ object App {
     }.mkString("\n")
   }
 
-  def systemInfo(domain: String, port: Int): Map[String, String] = {
+  def systemInfo(domain: String, port: Int, useHttps: Boolean): Map[String, String] = {
     Map[String, String](
       "java.version" -> System.getProperty("java.version"),
       "java.vm.name" -> System.getProperty("java.vm.name"),
@@ -88,6 +91,7 @@ object App {
       "os.version" -> System.getProperty("os.version"),
       "Domain" -> domain,
       "Port" -> port.toString,
+      "Use HTTPs" -> useHttps.toString,
     )
   }
 }

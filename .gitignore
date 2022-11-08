@@ -3,3 +3,4 @@ target/
 *.iml
 .bloop
 .metals
+PUSH_REMOTE.tar
