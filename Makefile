@@ -6,7 +6,7 @@ target/todoapi-1.0-SNAPSHOT-fatjar.jar:
 	mvn package
 
 clean:
-	sbt clean
+	mvn clean
 	rm PUSH_REMOTE.tar
 
 jar:
